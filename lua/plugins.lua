@@ -60,7 +60,6 @@ packer.startup(function(use)
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use {'neoclide/coc.nvim', branch = 'master', run = 'yarn install --frozen-lockfile'}
   use {'ellisonleao/gruvbox.nvim'}
-  use 'jiangmiao/auto-pairs'
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
   use { "nvim-telescope/telescope.nvim", requires = {
     { "nvim-telescope/telescope-live-grep-args.nvim" }, }, config = function()

@@ -1,5 +1,15 @@
-local status, nvim_lsp = pcall(require, 'lspconfig')
-if (not status) then return end
+-- check :messages for output if not functional
+local status, _ = pcall(require, 'lspconfig')
+if (not status) then print("There was an issue using require on lspconfig plugin " )return end
+local ok, lsp = pcall(require, 'lsp-zero')
+if (not ok) then print("There was an issue using require on lsp-zero plugin ") return end
+local ok, cmp = pcall(require, 'cmp')
+if (not ok) then print("There was an issue using require on cmp plugin ") return end
+local ok, mason_lsp = pcall(require, 'mason-lspconfig')
+if (not ok) then print("There was an issue using require on mason-lsp plugin ") return end
+local ok, mason = pcall(require, 'mason')
+if (not ok) then print("There was an issue using require mason plugin ") return end
+
 
 local opts = { noremap=true, silent=true }
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
@@ -9,120 +19,54 @@ vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  -- Enable completion triggered by <c-x><c-o>
-  -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Mappings.
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  local bufopts = { noremap=true, silent=true, buffer=bufnr }
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-  vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-  vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-  vim.keymap.set('n', '<space>wl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, bufopts)
-  vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
-  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-  vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-  vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
-end
 
 local servers = {'yamlls',
-'rust_analyzer',
-'tsserver',
-'pyright',
-"clangd",
-"cmake",
-"dockerls",
--- "cssmodules_ls",
---'asm_lsp',
---"nil_ls",
+  'rust_analyzer',
+  'tsserver',
+  'pyright',
+  "clangd",
+  "cmake",
+  "dockerls",
 }
-require("mason").setup()
-require("mason-lspconfig").setup{
-  ensure_installed = servers
+local cmp_select = {behavior = cmp.SelectBehavior.Select}
+-- local cmp_mappings = lsp.defaults.cmp_mappings({
+-- old line ^^  would like this to be really porable
+lsp.defaults.cmp_mappings({
+  ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
+  ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+  ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+  ["<C-Space>"] = cmp.mapping.complete(),
+})
+ -- some v cool maps stolen from the primagen
+lsp.on_attach(function(client, bufnr)
+  local opts = {buffer = bufnr, remap = false}
+
+  vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
+  vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
+  vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
+  vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
+  vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
+  vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
+  vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
+  vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
+  vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
+  vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
+end)
+lsp.preset('recommended')
+lsp.ensure_installed( servers )
+lsp.set_preferences({
+    suggest_lsp_servers = false,
+    sign_icons = {
+        error = 'E',
+        warn = 'W',
+        hint = 'H',
+        info = 'I'
+    }
+})
+vim.diagnostic.config({
+    virtual_text = true
+})
+mason.setup()
+mason_lsp.setup{
 }
-require("mason-lspconfig").setup_handlers({
-  function(server_name)
-    -- clangd is implied since i didn't specify it ++= cmake
-    nvim_lsp[server_name].setup{
-      on_attach = on_attach,
-    }
-  end,
-  ["pyright"] = function()
-    nvim_lsp.pyright.setup{
-      on_attach = on_attach,
-    }
-  end,
-  ["sumneko_lua"] = function()
-    nvim_lsp.sumneko_lua.setup {
-      on_attach = on_attach,
-      settings = {
-        Lua = {
-          diagnostics = {
-            globals = {'vim'}
-          },
-          workspace = {
-            library = vim.api.nvim_get_runtime_file('', true),
-            checkThirdParty = false
-          }
-        }
-      }
-    } end,
-    ['rust_analyzer'] = function()
-      nvim_lsp['rust_analyzer'].setup{
-        on_attach = on_attach,
-        -- Server-specific settings...
-        settings = {
-          ["rust-analyzer"] = {
-            assist = {
-              importEnforceGranularity = true,
-              importPrefix = "crate"
-            },
-            cargo = {
-              allFeatures = true
-            },
-            checkOnSave = {
-              -- default: `cargo check`
-              command = "clippy"
-            },
-          },
-          inlayHints = {
-            lifetimeElisionHints = {
-              enable = true,
-              useParameterNames = true
-            },
-          },
-        }
-      }end,
-      ['bashls'] = function()
-        nvim_lsp['bashls'].setup{
-          settings = {
-            yaml = {
-              schemas = {
-                ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*"
-              }
-            }
-          }
-        }end,
-
-        ['yamlls'] = function()
-          nvim_lsp['yamlls'].setup{
-            filetypes = {
-              "sh", "zshrc"
-            },
-          }end
-
-        })
-        local capabilities = require("cmp_nvim_lsp").default_capabilities()
-        for _, lsp in ipairs(servers) do
-          nvim_lsp[lsp].setup{
-            capabilities = capabilities
-          }
-        end
+lsp.setup()

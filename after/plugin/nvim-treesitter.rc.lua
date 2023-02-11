@@ -1,4 +1,8 @@
-require'nvim-treesitter.configs'.setup{
+local ok, treesitter = pcall(require, 'nvim-treesitter.configs')
+if (not ok) then print("There was an issue using pcall nvim-treesitter plugin ") return end
+
+-- require'nvim-treesitter.configs'.setup{
+treesitter.setup{
   ensure_installed = {"bash", "dockerfile", "rust", "scala", "markdown", "elixir", "yaml", "json", "c", "lua", "vim", "help", "ruby", "typescript", "python"},
   auto_install = true,
   textobjects = { enable = true };

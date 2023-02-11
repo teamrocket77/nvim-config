@@ -1,4 +1,6 @@
-require'nvim-treesitter.configs'.setup {
+local ok, treesitter = pcall(require, 'nvim-treesitter.configs')
+if (not ok) then print("There was an issue using pcall nvim-treesitter-textobjects plugin ") return end
+treesitter.setup {
   textobjects = {
     select = {
       enable = true,
