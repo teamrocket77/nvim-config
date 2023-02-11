@@ -1,6 +1,6 @@
 -- check :messages for output if not functional
-local status, _ = pcall(require, 'lspconfig')
-if (not status) then print("There was an issue using require on lspconfig plugin " )return end
+local ok, _ = pcall(require, 'lspconfig')
+if (not ok) then print("There was an issue using require on lspconfig plugin " )return end
 local ok, lsp = pcall(require, 'lsp-zero')
 if (not ok) then print("There was an issue using require on lsp-zero plugin ") return end
 local ok, cmp = pcall(require, 'cmp')
@@ -29,6 +29,7 @@ local servers = {'yamlls',
   "dockerls",
   "sumneko_lua",
   "ruby_ls",
+  "quick_lint_js",
 }
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 -- local cmp_mappings = lsp.defaults.cmp_mappings({
