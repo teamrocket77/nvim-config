@@ -27,6 +27,8 @@ local servers = {'yamlls',
   "clangd",
   "cmake",
   "dockerls",
+  "sumneko_lua",
+  "ruby_ls",
 }
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 -- local cmp_mappings = lsp.defaults.cmp_mappings({
@@ -52,6 +54,7 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
 end)
+
 lsp.preset('recommended')
 lsp.ensure_installed( servers )
 lsp.set_preferences({
@@ -63,9 +66,20 @@ lsp.set_preferences({
         info = 'I'
     }
 })
+-- Fix Undefined global 'vim'
+lsp.configure('sumneko_lua', {
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { 'vim' }
+            }
+        }
+    }
+})
 vim.diagnostic.config({
     virtual_text = true
 })
+
 mason.setup()
 mason_lsp.setup{
 }
