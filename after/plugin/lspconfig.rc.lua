@@ -33,59 +33,53 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
 
-nvim_lsp['nil_ls'].setup{
+local servers = {'yamlls',
+'rust_analyzer',
+'tsserver',
+'pyright',
+"clangd",
+"cmake",
+"dockerls",
+-- "cssmodules_ls",
+--'asm_lsp',
+--"nil_ls",
 }
-nvim_lsp['solargraph'].setup{
-	on_attach = on_attach,
+require("mason").setup()
+require("mason-lspconfig").setup{
+  ensure_installed = servers
 }
-
-nvim_lsp['asm_lsp'].setup{
-        filetypes = { "asm", "s", "S", "vmasm" },
-}
-
-nvim_lsp['tsserver'].setup{
-	on_attach = on_attach,
-}
-
--- nvim_lsp.pyright.setup{
---   on_attach = on_attach,
---   settings = {
---     pyright = {
---       {autoImoprtCompletion = true,},
---       {
---         analysis = {
---           autoSearchPaths = true,
---           diagnosticMode = 'openFilesOnly',
---           useLibarayCodeForTypes = true,
---         }
---       }
---     }
---   }
---   -- local status, lsp = pcall(require, 'py_lsp')
---   -- if (not status) then return end
---   -- cmd_env = {venvPath: "./venv/bin/activate"} don't think this is needed since I active the env already
--- }
-
-nvim_lsp['bashls'].setup{
-  settings = {
-    yaml = {
-      schemas = {
-        ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*"
-      }
+require("mason-lspconfig").setup_handlers({
+  function(server_name)
+    -- clangd is implied since i didn't specify it ++= cmake
+    nvim_lsp[server_name].setup{
+      on_attach = on_attach,
     }
-  }
-}
-
-nvim_lsp['yamlls'].setup{
-	  filetypes = {
-		  "sh", "zshrc"
-	  },
-}
-
-nvim_lsp['rust_analyzer'].setup{
-	on_attach = on_attach,
-	-- Server-specific settings...
-	settings = {
+  end,
+  ["pyright"] = function()
+    nvim_lsp.pyright.setup{
+      on_attach = on_attach,
+    }
+  end,
+  ["sumneko_lua"] = function()
+    nvim_lsp.sumneko_lua.setup {
+      on_attach = on_attach,
+      settings = {
+        Lua = {
+          diagnostics = {
+            globals = {'vim'}
+          },
+          workspace = {
+            library = vim.api.nvim_get_runtime_file('', true),
+            checkThirdParty = false
+          }
+        }
+      }
+    } end,
+    ['rust_analyzer'] = function()
+      nvim_lsp['rust_analyzer'].setup{
+        on_attach = on_attach,
+        -- Server-specific settings...
+        settings = {
           ["rust-analyzer"] = {
             assist = {
               importEnforceGranularity = true,
@@ -106,43 +100,29 @@ nvim_lsp['rust_analyzer'].setup{
             },
           },
         }
-}
+      }end,
+      ['bashls'] = function()
+        nvim_lsp['bashls'].setup{
+          settings = {
+            yaml = {
+              schemas = {
+                ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*"
+              }
+            }
+          }
+        }end,
 
-nvim_lsp.sumneko_lua.setup {
-  on_attach = on_attach,
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = {'vim'}
-      },
-      workspace = {
-        library = vim.api.nvim_get_runtime_file('', true),
-        checkThirdParty = false
-      }
-    }
-  }
-}
-require("mason").setup()
-require("mason-lspconfig").setup{ 
-  ensure_installed = {"pyright", "clangd", "cmake","dockerls"},
-}
-require("mason-lspconfig").setup_handlers({
-  function(server_name)
-    -- clangd is implied since i didn't specify it ++= cmake
-    nvim_lsp[server_name].setup{
-      on_attach = on_attach,
-    }
-  end,
-  ["pyright"] = function()
-    nvim_lsp.pyright.setup{
-        on_attach = on_attach,
-    }
-  end
-  })
-local servers = {'yamlls', 'rust_analyzer', 'tsserver', 'asm_lsp', 'pyright', "clangd", "cmake", "dockerls"}
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup{
-    capabilities = capabilities
-  }
-end
+        ['yamlls'] = function()
+          nvim_lsp['yamlls'].setup{
+            filetypes = {
+              "sh", "zshrc"
+            },
+          }end
+
+        })
+        local capabilities = require("cmp_nvim_lsp").default_capabilities()
+        for _, lsp in ipairs(servers) do
+          nvim_lsp[lsp].setup{
+            capabilities = capabilities
+          }
+        end

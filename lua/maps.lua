@@ -7,6 +7,7 @@ keymap('n', '<c-h>', '<c-w>h', opts)
 keymap('n', '<c-k>', '<c-w>k', opts)
 keymap('n', '<c-l>', '<c-w>l', opts)
 
+
 local km = vim.keymap
 km.set('n', '+', '<C-a>')
 km.set('n', '-', '<C-x>')

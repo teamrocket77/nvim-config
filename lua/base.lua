@@ -1,4 +1,4 @@
-vim.cmd('autocmd!')
+-- vim.cmd('autocmd!')
 vim.cmd('set encoding=utf-8')
 
 vim.wo.number = true

@@ -4,8 +4,11 @@ if (not status) then
     return
 end
 
-vim.cmd [[packadd packer.nvim]]
-vim.cmd [[set background=light]]
+-- vim.cmd [[packadd packer.nvim]]
+-- vim.cmd [[set background=light]]
+vim.cmd [[ colorscheme gruvbox ]]
+-- vim.cmd [[ autocmd VimEnter * hi Normal ctermbg=none ]]
+vim.cmd [[ autocmd vimenter * ++nested colorscheme gruvbox ]]
 vim.cmd [[set winheight=10]]
 vim.cmd [[set winminheight=10]]
 
@@ -20,16 +23,7 @@ packer.startup(function(use)
     'LnL7/vim-nix',
     ft = {'nix'}
   }
-  use {'regen100/cmake-language-server',
-    run = 'pip install cmake-language-server'
-    }
-  use {'MaskRay/ccls', 
-    run = 'cmake --build . --config Release --target install'}
   use 'wbthomason/packer.nvim'
-  use 'shaunsingh/solarized.nvim'
-  use {
-    'folke/tokyonight.nvim',
-  }
   use { 'L3MON4D3/LuaSnip' }
   use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
   use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
@@ -46,10 +40,10 @@ packer.startup(function(use)
 
   use {
     'nvim-lualine/lualine.nvim',
-    requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+    requires = { 'nvim-tree/nvim-web-devicons', opt = true }
   }
 
-
+  use { 'nvim-tree/nvim-web-devicons'}
   use 'williamboman/nvim-lsp-installer'
   use 'mfussenegger/nvim-jdtls'
   use 'onsails/lspkind-nvim'
@@ -64,18 +58,20 @@ packer.startup(function(use)
   use 'PhilRunninger/nerdtree-buffer-ops'
   use 'PhilRunninger/nerdtree-visual-selection'
   use 'jiangmiao/auto-pairs'
-  use { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim",}
+  use { "williamboman/mason.nvim"}
+  use { "williamboman/mason-lspconfig.nvim",}
   use 'yuezk/vim-js'
   use 'HerringtonDarkholme/yats.vim'
   use 'maxmellon/vim-jsx-pretty'
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
-  use { "nvim-telescope/telescope.nvim", requires = { { "nvim-telescope/telescope-live-grep-args.nvim" }, }, config = function()
+  use { "nvim-telescope/telescope.nvim", requires = { 
+    { "nvim-telescope/telescope-live-grep-args.nvim" }, }, config = function()
       require("telescope").load_extension("live_grep_args")
     end
   }
   use {
     "folke/trouble.nvim",
-    requires = "kyazdani42/nvim-web-devicons",
+    requires = "nvim-tree/nvim-web-devicons",
     config = function()
       require("trouble").setup { }
     end
@@ -86,7 +82,7 @@ packer.startup(function(use)
     ft = {'js', 'jsx', 'ts', 'txs'},
     run = 'make install'
   }
-
+  use 'AndrewRadev/linediff.vim'
   use({
     "iamcco/markdown-preview.nvim",
     run = function() vim.fn["mkdp#util#install"]() end,
