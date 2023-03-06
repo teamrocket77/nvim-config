@@ -4,11 +4,7 @@ if (not status) then
     return
 end
 
--- vim.cmd [[packadd packer.nvim]]
--- vim.cmd [[set background=light]]
-vim.cmd [[ colorscheme gruvbox ]]
 -- vim.cmd [[ autocmd VimEnter * hi Normal ctermbg=none ]]
-vim.cmd [[ autocmd vimenter * ++nested colorscheme gruvbox ]]
 vim.cmd [[set winheight=10]]
 vim.cmd [[set winminheight=10]]
 
@@ -87,3 +83,9 @@ packer.startup(function(use)
 })
 end
 )
+
+local status, packer = pcall(require, 'gruvbox.nvim')
+if (not status) then
+    -- print("gruvbox not install")
+    return
+end

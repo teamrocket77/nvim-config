@@ -28,7 +28,7 @@ local servers = {'yamlls',
   "cmake",
   "dockerls",
   "sumneko_lua",
-  "ruby_ls",
+  -- "ruby_ls",
   "quick_lint_js",
 }
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
