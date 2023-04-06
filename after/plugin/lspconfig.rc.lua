@@ -37,6 +37,7 @@ local servers = {'yamlls',
   "rnix",
   "solargraph",
   "sumneko_lua",
+
   'pyright',
   'rust_analyzer',
   'tsserver',
