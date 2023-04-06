@@ -7,6 +7,10 @@ keymap('n', '<c-h>', '<c-w>h', opts)
 keymap('n', '<c-k>', '<c-w>k', opts)
 keymap('n', '<c-l>', '<c-w>l', opts)
 
+-- keymaps from here https://github.com/untitled-ai/jupyter_ascending.vim
+keymap('n', '<space><space>x <Plug>', 'JupyterExecute', opts)
+keymap('n', '<space><space>X <Plug>', 'JupyterExecuteAll', opts)
+keymap('n', '<space><space>r <Plug>', 'JupyterRestart', opts)
 
 local km = vim.keymap
 km.set('n', '+', '<C-a>')
@@ -34,3 +38,4 @@ M.xnoremap = bind("x")
 M.inoremap = bind("i")
 
 return M
+

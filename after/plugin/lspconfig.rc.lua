@@ -1,3 +1,4 @@
+-- this file just exits out? should be more module all options should be self contained
 -- check :messages for output if not functional
 local ok, _ = pcall(require, 'lspconfig')
 if (not ok) then print("There was an issue using require on lspconfig plugin " )return end
@@ -17,20 +18,35 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
+-- Configure linter here
+-- TODO way to autoinstall
+local linters = {
+  -- linters
+  "eslint_d",
+  "pylint",
+  "asm-lsp",
+  "yamllint",
+}
 
 local servers = {'yamlls',
-  'rust_analyzer',
-  'tsserver',
-  'pyright',
+  -- lsp
   "clangd",
   "cmake",
   "dockerls",
+  "eslint",
+  "rnix",
+  "solargraph",
   "sumneko_lua",
-  -- "ruby_ls",
-  "quick_lint_js",
+
+  'pyright',
+  'rust_analyzer',
+  'tsserver',
+  'vimls',
 }
+mason_lsp.setup{
+	ensure_installed = servers
+}
+
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 -- local cmp_mappings = lsp.defaults.cmp_mappings({
 -- old line ^^  would like this to be really porable
@@ -57,7 +73,6 @@ lsp.on_attach(function(client, bufnr)
 end)
 
 lsp.preset('recommended')
-lsp.ensure_installed( servers )
 lsp.set_preferences({
     suggest_lsp_servers = false,
     sign_icons = {
@@ -67,6 +82,7 @@ lsp.set_preferences({
         info = 'I'
     }
 })
+
 -- Fix Undefined global 'vim'
 lsp.configure('sumneko_lua', {
     settings = {
@@ -77,11 +93,18 @@ lsp.configure('sumneko_lua', {
         }
     }
 })
+
+lsp.configure('tsserver', {
+  handlers = {
+    ["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+      virtual_text = true
+    })
+  }
+})
 vim.diagnostic.config({
     virtual_text = true
 })
 
 mason.setup()
-mason_lsp.setup{
-}
 lsp.setup()
