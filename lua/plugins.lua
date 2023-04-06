@@ -17,41 +17,40 @@ packer.startup(function(use)
     ft = {'rst'},
   }
 
-  use {
-    'nvim-lualine/lualine.nvim',
-    requires = { 'nvim-tree/nvim-web-devicons', opt = true }
-  }
+  -- use {
+  --   'nvim-lualine/lualine.nvim',
+  --   requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+  -- }
 
   -- very heavy not alwyas necessary
   -- not sure if this is needed, #TODO possibly remove
-  use { 'nvim-tree/nvim-web-devicons'}
   -- for automatic linter setup
   -- use 'onsails/lspkind-nvim'
   use {'VonHeikemen/lsp-zero.nvim',
-  branch = 'v1.x',
-  requires = {
-    -- autolsp config might give error when initalizing
-    {'neovim/nvim-lspconfig'},
-    { "williamboman/mason.nvim"},
-    { "williamboman/mason-lspconfig.nvim",},
+    branch = 'v1.x',
+    requires = {
+      -- autolsp config might give error when initalizing
+      {'neovim/nvim-lspconfig'},
+      { "williamboman/mason.nvim"},
+      { "williamboman/mason-lspconfig.nvim",},
 
-    -- sm3xy suggestions
-    {'hrsh7th/nvim-cmp'},
-    {'hrsh7th/cmp-path'},
-    {'hrsh7th/cmp-buffer'},
-    {'hrsh7th/cmp-nvim-lua'},
-    {'hrsh7th/cmp-nvim-lsp'},
-    {'saadparwaiz1/cmp_luasnip'},
-    {'rafamadriz/friendly-snippets'},
+      -- sm3xy suggestions
+      {'hrsh7th/nvim-cmp'},
+      {'hrsh7th/cmp-path'},
+      {'hrsh7th/cmp-buffer'},
+      {'hrsh7th/cmp-nvim-lua'},
+      {'hrsh7th/cmp-nvim-lsp'},
+      {'saadparwaiz1/cmp_luasnip'},
+      {'rafamadriz/friendly-snippets'},
 
+    }
   }
-}
 
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-context'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'nvim-treesitter/playground'
-  -- use {'neoclide/coc.nvim', branch = 'master', run = 'yarn install --frozen-lockfile'}
+  -- colors
   use {'ellisonleao/gruvbox.nvim'}
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 
@@ -63,23 +62,22 @@ packer.startup(function(use)
       require("telescope").load_extension("live_grep_args")
     end
   }
-  -- nice debug info
-  use {
-    "folke/trouble.nvim",
-    requires = "nvim-tree/nvim-web-devicons",
-    config = function()
-      require("trouble").setup { }
-    end
-  }
-  use { 'pixelneo/vim-python-docstring' }
+  -- use { 'pixelneo/vim-python-docstring',
+  -- 	opt = true,
+  -- 	ft = 'py',
+  -- }
   use { 'kkoomen/vim-doge',
     run = ':call doge#install()'
   }
   use 'AndrewRadev/linediff.vim'
   use({
     "iamcco/markdown-preview.nvim",
+    ft = {'md'},
     run = function() vim.fn["mkdp#util#install"]() end,
 })
+  use {
+	'untitled-ai/jupyter_ascending.vim',
+  }
 end
 )
 vim.cmd([[

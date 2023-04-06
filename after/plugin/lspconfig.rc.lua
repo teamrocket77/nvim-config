@@ -22,9 +22,9 @@ vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 -- TODO way to autoinstall
 local linters = {
   -- linters
-  "asm-lsp",
   "eslint_d",
   "pylint",
+  "asm-lsp",
   "yamllint",
 }
 
@@ -40,10 +40,12 @@ local servers = {'yamlls',
   'pyright',
   'rust_analyzer',
   'tsserver',
+  'vimls',
 }
 mason_lsp.setup{
 	ensure_installed = servers
 }
+
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 -- local cmp_mappings = lsp.defaults.cmp_mappings({
 -- old line ^^  would like this to be really porable
