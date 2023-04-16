@@ -77,6 +77,10 @@ packer.startup(function(use)
       require("telescope").load_extension("live_grep_args")
     end
   }
+  use {
+      'nvim-lualine/lualine.nvim',
+      requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+  }
   -- use { 'pixelneo/vim-python-docstring',
   -- 	opt = true,
   -- 	ft = 'py',
