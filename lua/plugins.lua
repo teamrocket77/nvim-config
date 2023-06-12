@@ -31,6 +31,9 @@ packer.startup(function(use)
   use { 'habamax/vim-rst',
     ft = {'rst'},
   }
+  -- undo tree -- very useful 
+  use 'mbbill/undotree'
+
 
   -- use {
   --   'nvim-lualine/lualine.nvim',
@@ -75,6 +78,7 @@ packer.startup(function(use)
     { "BurntSushi/ripgrep" },
     	}, config = function()
       require("telescope").load_extension("live_grep_args")
+      -- require("telescope").load_extension("macros")
     end
   }
   use {
@@ -89,6 +93,8 @@ packer.startup(function(use)
     run = ':call doge#install()'
   }
   use 'AndrewRadev/linediff.vim'
+
+  use {'mfussenegger/nvim-jdtls'}
   use({
     "iamcco/markdown-preview.nvim",
     ft = {'md'},
@@ -97,6 +103,11 @@ packer.startup(function(use)
   use {
 	'untitled-ai/jupyter_ascending.vim',
   }
+  -- use {
+  --   -- https://github.com/ecthelionvi/NeoComposer.nvim
+  -- "ecthelionvi/NeoComposer.nvim",
+  -- requires = { "kkharji/sqlite.lua" }
+  -- }
 end
 )
 vim.cmd([[

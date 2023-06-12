@@ -12,6 +12,9 @@ keymap('n', '<space><space>x <Plug>', 'JupyterExecute', opts)
 keymap('n', '<space><space>X <Plug>', 'JupyterExecuteAll', opts)
 keymap('n', '<space><space>r <Plug>', 'JupyterRestart', opts)
 
+-- https://github.com/mbbill/undotree#download-and-install
+keymap('n', '<leader><F5>', 'vim.cmd.UndotreeToggle', opts)
+
 local km = vim.keymap
 km.set('n', '+', '<C-a>')
 km.set('n', '-', '<C-x>')
