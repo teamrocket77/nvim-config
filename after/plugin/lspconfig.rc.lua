@@ -1,6 +1,6 @@
 -- this file just exits out? should be more module all options should be self contained
 -- check :messages for output if not functional
-local ok, _ = pcall(require, 'lspconfig')
+local ok, lspconfig = pcall(require, 'lspconfig')
 if (not ok) then print("There was an issue using require on lspconfig plugin " )return end
 local ok, lsp = pcall(require, 'lsp-zero')
 if (not ok) then print("There was an issue using require on lsp-zero plugin ") return end
