@@ -1,0 +1,8 @@
+-- this file just exits out? should be more module all options should be self contained
+-- check :messages for output if not functional
+-- local ok, composer = pcall(require, 'NeoComposer')
+-- -- if (not ok) then print("There was an issue using require on NeoComposer plugin " )return end
+-- if (not ok) then return end
+-- 
+-- composer.setup()
+-- require('telescope').load_extension('macros')

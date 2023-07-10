@@ -9,6 +9,21 @@ vim.cmd [[ autocmd vimenter * ++nested colorscheme gruvbox ]]
 vim.cmd [[set winheight=10]]
 vim.cmd [[set winminheight=10]]
 
+-- 
+local ensure_packer = function()
+  local fn = vim.fn
+  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+  if fn.empty(fn.glob(install_path)) > 0 then
+    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+    vim.cmd [[packadd packer.nvim]]
+    return true
+  end
+  return false
+end
+
+local packer_bootstrap = ensure_packer()
+--
+
 packer.startup(function(use)
   use 'wbthomason/packer.nvim'
 
@@ -16,6 +31,9 @@ packer.startup(function(use)
   use { 'habamax/vim-rst',
     ft = {'rst'},
   }
+  -- undo tree -- very useful 
+  use 'mbbill/undotree'
+
 
   -- use {
   --   'nvim-lualine/lualine.nvim',
@@ -46,6 +64,11 @@ packer.startup(function(use)
     }
   }
 
+  use({ 'scalameta/nvim-metals',
+  requires = {
+    "nvim-lua/plenary.nvim",
+    "mfussenegger/nvim-dap"
+  }})
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-context'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -60,7 +83,12 @@ packer.startup(function(use)
     { "BurntSushi/ripgrep" },
     	}, config = function()
       require("telescope").load_extension("live_grep_args")
+      -- require("telescope").load_extension("macros")
     end
+  }
+  use {
+      'nvim-lualine/lualine.nvim',
+      requires = { 'nvim-tree/nvim-web-devicons', opt = true }
   }
   -- use { 'pixelneo/vim-python-docstring',
   -- 	opt = true,
@@ -70,6 +98,8 @@ packer.startup(function(use)
     run = ':call doge#install()'
   }
   use 'AndrewRadev/linediff.vim'
+
+  use {'mfussenegger/nvim-jdtls'}
   use({
     "iamcco/markdown-preview.nvim",
     ft = {'md'},
@@ -78,6 +108,11 @@ packer.startup(function(use)
   use {
 	'untitled-ai/jupyter_ascending.vim',
   }
+  -- use {
+  --   -- https://github.com/ecthelionvi/NeoComposer.nvim
+  -- "ecthelionvi/NeoComposer.nvim",
+  -- requires = { "kkharji/sqlite.lua" }
+  -- }
 end
 )
 vim.cmd([[
