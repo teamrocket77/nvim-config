@@ -38,15 +38,11 @@ local servers = {'yamlls',
   "rnix",
   "solargraph",
   "golangci_lint_ls",
-  "sumneko_lua",
   "als",
   'pyright',
   'rust_analyzer',
   'tsserver',
   'vimls',
-}
-mason_lsp.setup{
-	ensure_installed = servers
 }
 
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
@@ -109,4 +105,7 @@ vim.diagnostic.config({
 })
 
 mason.setup()
+mason_lsp.setup{
+	ensure_installed = servers
+}
 lsp.setup()

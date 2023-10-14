@@ -97,9 +97,10 @@ packer.startup(function(use)
   use { 'kkoomen/vim-doge',
     run = ':call doge#install()'
   }
-  use 'AndrewRadev/linediff.vim'
-
+  use {'AndrewRadev/linediff.vim'}
+  use {'mfussenegger/nvim-dap'}
   use {'mfussenegger/nvim-jdtls'}
+  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
   use({
     "iamcco/markdown-preview.nvim",
     ft = {'md'},
