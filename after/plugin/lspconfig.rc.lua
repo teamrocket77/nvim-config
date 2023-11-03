@@ -35,9 +35,6 @@ local servers = {'yamlls',
   "dockerls",
   "bashls",
   "eslint",
-  "rnix",
-  "solargraph",
-  "golangci_lint_ls",
   "als",
   'pyright',
   'rust_analyzer',
@@ -104,8 +101,9 @@ vim.diagnostic.config({
     virtual_text = true
 })
 
+lsp.setup()
+
 mason.setup()
 mason_lsp.setup{
 	ensure_installed = servers
 }
-lsp.setup()

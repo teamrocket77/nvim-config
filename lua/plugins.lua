@@ -4,8 +4,12 @@ if (not status) then
     return
 end
 
-vim.cmd [[ colorscheme gruvbox ]]
-vim.cmd [[ autocmd vimenter * ++nested colorscheme gruvbox ]]
+ok, k = pcall(require, 'kanagawa')
+if ok then
+  vim.cmd [[ colorscheme kanagawa ]]
+else 
+  print("KANAGAWA isn't installed")
+end
 vim.cmd [[set winheight=10]]
 vim.cmd [[set winminheight=10]]
 
@@ -63,7 +67,12 @@ packer.startup(function(use)
 
     }
   }
+  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
 
+  use {
+    "nvim-telescope/telescope-file-browser.nvim",
+    requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+}
   use({ 'scalameta/nvim-metals',
   requires = {
     "nvim-lua/plenary.nvim",
@@ -74,7 +83,7 @@ packer.startup(function(use)
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'nvim-treesitter/playground'
   -- colors
-  use {'ellisonleao/gruvbox.nvim'}
+  -- use {'ellisonleao/gruvbox.nvim'}
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 
   -- enable ability for dir to be searched for files
@@ -90,10 +99,6 @@ packer.startup(function(use)
       'nvim-lualine/lualine.nvim',
       requires = { 'nvim-tree/nvim-web-devicons', opt = true }
   }
-  -- use { 'pixelneo/vim-python-docstring',
-  -- 	opt = true,
-  -- 	ft = 'py',
-  -- }
   use { 'kkoomen/vim-doge',
     run = ':call doge#install()'
   }
@@ -109,6 +114,8 @@ packer.startup(function(use)
   use {
 	'untitled-ai/jupyter_ascending.vim',
   }
+
+  use {"rebelot/kanagawa.nvim"}
   -- use {
   --   -- https://github.com/ecthelionvi/NeoComposer.nvim
   -- "ecthelionvi/NeoComposer.nvim",
