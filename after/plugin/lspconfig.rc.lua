@@ -78,32 +78,44 @@ lsp.set_preferences({
     }
 })
 
--- Fix Undefined global 'vim'
-lsp.configure('sumneko_lua', {
-    settings = {
-        Lua = {
-            diagnostics = {
-                globals = { 'vim' }
-            }
-        }
-    }
-})
-
-lsp.configure('tsserver', {
-  handlers = {
-    ["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = true
-    })
-  }
-})
 vim.diagnostic.config({
     virtual_text = true
 })
 
 lsp.setup()
 
+local handlers = {
+   function (server_name) -- default handler (optional)
+       require("lspconfig")[server_name].setup {}
+   end,
+   ["yamlls"] = function ()
+       lspconfig.yamlls.setup {
+	   settings = {
+		   yaml = {
+			   keyOrdering = false
+		}
+	   }
+	}
+   end,
+   ["tsserver"] = function ()
+       lspconfig.tsserver.setup {
+       }
+   end,
+   ["lua_ls"] = function ()
+       lspconfig.lua_ls.setup {
+	   settings = {
+	       Lua = {
+		   diagnostics = {
+		       globals = { "vim" }
+		   }
+	       }
+	   }
+       }
+   end,
+}
+
 mason.setup()
 mason_lsp.setup{
-	ensure_installed = servers
+	ensure_installed = servers,
+	handlers = handlers,
 }
