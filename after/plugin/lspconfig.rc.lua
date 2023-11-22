@@ -30,12 +30,13 @@ local linters = {
 
 local servers = {'yamlls',
   -- lsp
+  "als",
+  "bashls",
   "clangd",
   "cmake",
   "dockerls",
-  "bashls",
   "eslint",
-  "als",
+  "gopls",
   'pyright',
   'rust_analyzer',
   'tsserver',
@@ -110,6 +111,10 @@ local handlers = {
 		   }
 	       }
 	   }
+       }
+   end,
+   ["gopls"] = function ()
+       lspconfig.gopls.setup {
        }
    end,
 }

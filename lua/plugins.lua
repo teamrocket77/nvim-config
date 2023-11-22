@@ -18,15 +18,16 @@ local ensure_packer = function()
   local fn = vim.fn
   local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
   if fn.empty(fn.glob(install_path)) > 0 then
+    print("Packer not installed")
+    print("Packer installing now")
     fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
     vim.cmd [[packadd packer.nvim]]
     return true
   end
-  return false
+  return false -- means that packer is installed
 end
 
 local packer_bootstrap = ensure_packer()
---
 
 packer.startup(function(use)
   use 'wbthomason/packer.nvim'
@@ -38,13 +39,14 @@ packer.startup(function(use)
   -- undo tree -- very useful 
   use 'mbbill/undotree'
 
+  use 'fatih/vim-go' -- required for go formatting
 
   -- use {
   --   'nvim-lualine/lualine.nvim',
   --   requires = { 'nvim-tree/nvim-web-devicons', opt = true }
   -- }
 
-  -- very heavy not alwyas necessary
+  -- very heavy not always necessary
   -- not sure if this is needed, #TODO possibly remove
   -- for automatic linter setup
   -- use 'onsails/lspkind-nvim'
