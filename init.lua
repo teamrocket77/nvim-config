@@ -16,13 +16,6 @@ keyset('n', '<c-h>', '<c-w>h', opts)
 keyset('n', '<c-k>', '<c-w>k', opts)
 keyset('n', '<c-l>', '<c-w>l', opts)
 
-local t_builtin = require('telescope.builtin')
-keyset("n", "<leader>gre", t_builtin.live_grep, {})
-keyset("n", "<leader>ggg", t_builtin.grep_string, {})
-keyset("n", "<leader>commit", t_builtin.git_commits, {})
-keyset("n", "<leader>bcommit", t_builtin.git_bcommits, {})
-keyset("n", "<leader>status", t_builtin.git_bcommits, {})
-
 require('base')
 require('macos')
 require ('plugins')
