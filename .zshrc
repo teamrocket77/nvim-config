@@ -14,6 +14,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
+export CLASSPATH="$HOME/Downloads/jarfiles/psimj2.jar:$CLASSPATH"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -104,3 +105,15 @@ alias ez="nvim ~/.zshrc"
 alias tf="terraform"
 alias tfp="tf plan"
 alias tfa="tf apply"
+
+simcompile(){
+  javac -cp ../jarfiles/oosimlib.jar:../jarfiles/psimj2.jar:. *java
+}
+simrun(){
+  if [[ "$1" != "" ]]; then
+    java -cp ../jarfiles/oosimlib.jar:../jarfiles/psimj2.jar:. $1
+  else
+    java -cp ../jarfiles/oosimlib.jar:../jarfiles/psimj2.jar:. Barber
+  fi
+
+}
