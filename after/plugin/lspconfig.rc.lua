@@ -41,6 +41,7 @@ local servers = {'yamlls',
   'rust_analyzer',
   'tsserver',
   'vimls',
+  'jdtls',
 }
 
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
@@ -85,10 +86,69 @@ vim.diagnostic.config({
 
 lsp.setup()
 
+-- local home = vim.env.HOME
+-- 
+-- local is_file_there = function()
+--   local is_there=io.open(home .. '/.local/share/eclipse/eclipse-java-google-style.xml', "r")
+--   if is_there~=nil then io.close(is_there) return true
+--   else return false
+--   end
+-- end
+-- 
+-- local get_file = function()
+--   if not is_file_there()
+--     then
+--     vim.fn.system{'curl',  "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml", '--create-dirs', home .. '.local/share/eclipse/eclipse-java-google-style.xml'}
+--   end
+-- end
+-- 
+-- local get_url = function()
+--   get_file()
+--   return {
+--     url = ".local/share/eclipse/eclipse-java-google-style.xml",
+--     profile = "GoogleStyle",
+--   }
+-- end
+-- 
+-- local jdtls_config = {
+--   root_dir = vim.fs.dirname(vim.fs.find({
+--     'gradle',
+--     'mvnw',
+--     '.git',
+--     'main.java',
+--     'Main.java'
+--   })),
+--   settings = (function()
+--     if vim.env.JAVA_HOME == nil or vim.env.JAVA_HOME == '' then
+--       return { }
+--     else
+--       return {
+--         java = {
+--           format = {
+--             settings = {
+--               get_url()
+--             },
+--           },
+--           signatureHels = { enabled = true },
+--           configuration = {
+--             runtimes = {
+--               {
+--                 name = "JavaSE-17",
+--                 path = vim.env.JAVA_HOME .. "/"
+--               },
+--             }
+--           }
+--         }
+--       }
+--     end
+--   end)(),
+--   bundles = {},
+--   cmd = {
+--     JAVA_HOME = vim.env.JAVA_HOME
+--   }
+-- }
+
 local handlers = {
-   function (server_name) -- default handler (optional)
-       require("lspconfig")[server_name].setup {}
-   end,
    ["yamlls"] = function ()
        lspconfig.yamlls.setup {
 	   settings = {
@@ -113,14 +173,26 @@ local handlers = {
 	   }
        }
    end,
+   ["rnix"] = function ()
+       lspconfig.rnix.setup {
+       }
+   end,
    ["gopls"] = function ()
        lspconfig.gopls.setup {
        }
    end,
-}
+   -- ["jdtls"] = function ()
+   --   lspconfig.jdtls.start_or_attach{
+   --     jdtls_config
+   --   }
+   -- end,
+ }
 
 mason.setup()
 mason_lsp.setup{
 	ensure_installed = servers,
-	handlers = handlers,
+	handlers = {
+          lsp.default_setup,
+          handlers
+        },
 }
