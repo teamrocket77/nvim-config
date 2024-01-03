@@ -10,13 +10,38 @@ local ok, mason_lsp = pcall(require, 'mason-lspconfig')
 if (not ok) then print("There was an issue using require on mason-lsp plugin ") return end
 local ok, mason = pcall(require, 'mason')
 if (not ok) then print("There was an issue using require mason plugin ") return end
+local ok, neodev = pcall(require, 'neodev')
+if (not ok) then print("There was an issue using require neodev plugin ") return end
 
+function get_lsp()
+      local clients = vim.lsp.buf_get_clients()
+
+    -- Use vim.inspect to convert the clients table to a human-readable string
+    local client_info = vim.inspect(clients)
+
+    -- Split the string into lines for display in the buffer
+    local lines = vim.split(client_info, "\n")
+
+    -- Create a new buffer for the LSP client output
+    vim.cmd("new")
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+
+    -- Set the buffer to be unlisted, no swap file, and read-only
+    vim.bo.buftype = "nofile"
+    vim.bo.bufhidden = "wipe"
+    vim.bo.swapfile = false
+    vim.bo.readonly = true
+
+    -- Move cursor to the first line
+    vim.api.nvim_win_set_cursor(0, {1, 0})
+end
 
 local opts = { noremap=true, silent=true }
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+vim.keymap.set('n', '<leader>buf', get_lsp, opts)
 
 -- Configure linter here
 -- TODO way to autoinstall
@@ -43,6 +68,37 @@ local servers = {'yamlls',
   'vimls',
   'jdtls',
 }
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end,
+  },
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp'},
+    { name = 'nvim_lsp_signature_help'},
+    { name = 'luasnip'},
+    { name = 'path'},
+    { name = 'nvim_lua'},
+  }, {
+    name = { 'buffer', keyword_length = 3 },
+  })
+})
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
 
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 -- local cmp_mappings = lsp.defaults.cmp_mappings({
@@ -148,51 +204,71 @@ lsp.setup()
 --   }
 -- }
 
+
+neodev.setup({
+})
 local handlers = {
-   ["yamlls"] = function ()
-       lspconfig.yamlls.setup {
-	   settings = {
-		   yaml = {
-			   keyOrdering = false
-		}
-	   }
-	}
-   end,
-   ["tsserver"] = function ()
-       lspconfig.tsserver.setup {
-       }
-   end,
-   ["lua_ls"] = function ()
-       lspconfig.lua_ls.setup {
-	   settings = {
-	       Lua = {
-		   diagnostics = {
-		       globals = { "vim" }
-		   }
-	       }
-	   }
-       }
-   end,
-   ["rnix"] = function ()
-       lspconfig.rnix.setup {
-       }
-   end,
-   ["gopls"] = function ()
-       lspconfig.gopls.setup {
-       }
-   end,
-   -- ["jdtls"] = function ()
-   --   lspconfig.jdtls.start_or_attach{
-   --     jdtls_config
-   --   }
-   -- end,
- }
+  ["yamlls"] = function ()
+    lspconfig.yamlls.setup {
+      capabilities = capabilities,
+      settings = {
+        yaml = {
+          keyordering = false
+        }
+      }
+    }
+  end,
+  ["tsserver"] = function ()
+    lspconfig.tsserver.setup {
+      capabilities = capabilities,
+    }
+  end,
+  ["lua_ls"] = function ()
+    lspconfig.lua_ls.setup {
+      capabilities = capabilities,
+      settings = {
+        Lua = {
+          completion = {
+            callSnippet = "Replace"
+          },
+          diagnostics = {
+            globals = { "vim"},
+          },
+        }
+      }
+    }
+  end,
+  ["rnix"] = function ()
+    lspconfig.rnix.setup {
+      capabilities = capabilities
+    }
+  end,
+  ["gopls"] = function ()
+    lspconfig.gopls.setup {
+      capabilities = capabilities
+    }
+  end,
+  ["rust-analyzer"] = function ()
+    lspconfig.rust_analyzer.setup {
+      capabilities = capabilities
+    }
+  end,
+}
+
+local default_config = function()
+  return {
+    capabilities = capabilities
+  }
+end
 
 mason.setup()
-mason_lsp.setup{
-	ensure_installed = servers,
+mason_lsp.setup({
 	handlers = {
-          lsp.default_setup,
-          handlers
-        },
-}
+          [1] = function(server)
+            local config_func = handlers[server] or default_config
+            config_func()
+          end,
+        }
+})
+
+

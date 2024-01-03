@@ -6,6 +6,9 @@ vim.bo.softtabstop = 2
 vim.cmd [[ set mouse=a ]]
 vim.cmd [[ let g:python3_host_prog = '/Users/vincentcradler/.pyenv/versions/pynvim/bin/python'  ]]
 vim.cmd [[ let g:ruby_host_prog = '/Users/vincentcradler/.rbenv/versions/3.1.0/bin/ruby'  ]]
+
+vim.api.nvim_set_keymap('n', '<Space>', '', {})
+vim.g.mapleader = ' '
 -- 
 local keyset = vim.keymap.set
 local opts = {silent = true, noremap = true, expr = true}

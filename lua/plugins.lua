@@ -123,6 +123,7 @@ packer.startup(function(use)
   -- "ecthelionvi/NeoComposer.nvim",
   -- requires = { "kkharji/sqlite.lua" }
   -- }
+  use { "folke/neodev.nvim"}
 end
 )
 vim.cmd([[
